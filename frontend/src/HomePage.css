@@ -1,0 +1,23 @@
+.top-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    align-items: right;
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+    padding-right: 0.5rem;
+    z-index: 2;
+    background-color: rgb(60, 60, 202);
+    color: antiquewhite;
+}
+
+.nav-links {
+    grid-column: 3;
+    display: flex;
+    gap: 1rem;
+}
+  
+.nav-links a {
+    text-decoration: none;
+    font-weight: 500;
+    color: #ffffff;
+}
