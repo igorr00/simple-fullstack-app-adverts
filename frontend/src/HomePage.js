@@ -10,6 +10,18 @@ const HomePage = () => {
     navigate('/login');
   };
 
+  const handleAddAdvert = () => {
+    navigate('/addAdvert');
+  };
+
+  const handleLogIn = () => {
+    navigate('/login');
+  };
+
+  const handleSignUp = () => {
+    navigate('/register');
+  };
+
   const isLoggedIn = user !== null && user !== undefined;
 
   return (
@@ -18,14 +30,14 @@ const HomePage = () => {
         <nav className="nav-links">
           {isLoggedIn ? (
             <>
-              <p><b>{user.name}</b></p>
-              <button onClick={handleSignOut}><b>Sign Out</b></button>
-              <a href="/addAdvert"><b>Add Advert</b></a>
+              <p><b>{user.name} |</b></p>
+              <button className="navbar-button" onClick={handleSignOut}><b>Sign Out</b></button>
+              <button className="navbar-button" onClick={handleAddAdvert}><b>Add Advert</b></button>
             </>
           ) : (
             <>
-              <a href="/login"><b>Login</b></a>
-              <a href="/register"><b>Sign Up</b></a>
+              <button className="navbar-button" onClick={handleLogIn}><b>Log In</b></button>
+              <button className="navbar-button" onClick={handleSignUp}><b>Sign Up</b></button>
             </>
           )}
         </nav>

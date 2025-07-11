@@ -2,9 +2,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr auto;
     align-items: right;
-    padding-bottom: 1rem;
-    padding-top: 0.5rem;
     padding-right: 0.5rem;
+    height: 3rem;
     z-index: 2;
     background-color: rgb(60, 60, 202);
     color: antiquewhite;
@@ -20,4 +19,15 @@
     text-decoration: none;
     font-weight: 500;
     color: #ffffff;
+    line-height: 1;
+}
+
+.navbar-button {
+  background: none;
+  border: none;
+  color: white;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0;
 }

@@ -28,8 +28,7 @@ const createTables = async () => {
 
     console.log("Tables created");
 
-    await pool.query('DELETE FROM adverts;');
-    await pool.query('DELETE FROM users;');
+    await pool.query('TRUNCATE adverts, users RESTART IDENTITY CASCADE;');
 
     await pool.query(`
       INSERT INTO users (name, password, register_date, phone) VALUES
