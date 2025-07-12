@@ -9,8 +9,40 @@ const createAdvert = async (advert) => {
   return result.rows[0];
 };
 
-const getAdverts = async () => {
-  const result = await pool.query('SELECT * FROM adverts');
+const getAdverts = async ({ limit, offset, name, minPrice, maxPrice, category, userId }) => {
+  let query = 'SELECT * FROM adverts WHERE 1=1';
+  const values = [];
+  let index = 1;
+
+  if (name) {
+    query += ` AND LOWER(name) LIKE LOWER($${index++})`;
+    values.push(`%${name}%`);
+  }
+
+  if (minPrice) {
+    query += ` AND price >= $${index++}`;
+    values.push(minPrice);
+  }
+
+  if (maxPrice) {
+    query += ` AND price <= $${index++}`;
+    values.push(maxPrice);
+  }
+
+  if (category) {
+    query += ` AND category = $${index++}`;
+    values.push(category);
+  }
+
+  if (userId) {
+    query += ` AND user_id = $${index++}`;
+    values.push(userId);
+  }
+
+  query += ` ORDER BY date DESC LIMIT $${index++} OFFSET $${index++}`;
+  values.push(limit, offset);
+
+  const result = await pool.query(query, values);
   return result.rows;
 };
 

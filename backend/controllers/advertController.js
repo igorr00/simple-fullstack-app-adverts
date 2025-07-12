@@ -10,9 +10,29 @@ const createAdvert = async (req, res) => {
 };
 
 const getAdverts = async (req, res) => {
+  const {
+    page = 1,
+    limit = 20,
+    name,
+    minPrice,
+    maxPrice,
+    category,
+    userId
+  } = req.query;
+
+  const offset = (page - 1) * limit;
+
   try {
-    const adverts = await advertModel.getAdverts();
-    res.status(200).json(adverts);
+    const adverts = await advertModel.getAdverts({
+      limit,
+      offset,
+      name,
+      minPrice,
+      maxPrice,
+      category,
+      userId
+    });
+    res.json(adverts);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
