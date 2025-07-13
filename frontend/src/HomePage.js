@@ -62,6 +62,11 @@ const HomePage = () => {
     fetchAdverts();
   };
 
+  const viewAdvert = async (id) => {
+    localStorage.setItem('advertId', id);
+    navigate('/viewAdvert');
+  };
+
   return (
     <div className="home-page">
       <header className="top-nav">
@@ -136,15 +141,15 @@ const HomePage = () => {
           </thead>
           <tbody>
             {adverts.map((advert) => (
-              <tr key={advert.id}>
-                <td><img src={advert.picture_url} alt={advert.name} className="advert-img" /></td>
+              <tr className='advert-row' key={advert.id} onClick={() => viewAdvert(advert.id)}>
+                <td><img src={advert.picture_url} alt={advert.name} className="advert-image" /></td>
                 <td>{advert.name}</td>
                 <td>{advert.price} €</td>
                 <td>{advert.city}</td>
                 <td>{advert.category}</td>
                 {(isLoggedIn && advert.user_id === user.id) ? (
                   <td>
-                    <button className='editButton' onClick={() => navigate(`/editAdvert/${advert.id}`)}>Edit</button>
+                    <button className='editButton' onClick={() => navigate(`/editAdvert`)}>Edit</button>
                     <button className='editButton' onClick={() => handleDelete(advert.id)}>Delete</button>
                   </td>
                 ) : (
