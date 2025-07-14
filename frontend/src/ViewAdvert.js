@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ViewAdvert.css';
+import AdvertDialog from './AdvertDialog';
 
 const ViewAdvert = () => {
   const navigate = useNavigate();
@@ -11,8 +12,10 @@ const ViewAdvert = () => {
   const [advertUser, setAdvertUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchAdvert = async () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedAdvert, setSelectedAdvert] = useState(null);
+
+  const fetchAdvert = async () => {
       try {
         const advertId = localStorage.getItem('advertId');
         const advertRes = await fetch(`http://localhost:5000/api/adverts/${advertId}`);
@@ -29,12 +32,29 @@ const ViewAdvert = () => {
       }
     };
 
+  useEffect(() => {
     fetchAdvert();
   }, []);
 
   const handleDelete = async (id) => {
     await fetch(`http://localhost:5000/api/adverts/${id}`, { method: 'DELETE' });
     navigate('/');
+  };
+
+  const handleEdit = (advert) => {
+    setSelectedAdvert(advert);
+    setDialogOpen(true);
+  };
+
+  const handleAdd = () => {
+    setSelectedAdvert(null);
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = (updated) => {
+    setDialogOpen(false);
+    setSelectedAdvert(null);
+    if (updated) fetchAdvert();
   };
 
   if (loading) return <p>Loading...</p>;
@@ -51,7 +71,7 @@ const ViewAdvert = () => {
                     localStorage.removeItem('user');
                     navigate('/login');
                 }}><b>Sign Out</b></button>
-                <button className="navbar-button" onClick={() => navigate('/editAdvert')}><b>Add Advert</b></button>
+                <button className="navbar-button" onClick={() => handleAdd()}><b>Add Advert</b></button>
                 </>
             ) : (
                 <>
@@ -83,9 +103,16 @@ const ViewAdvert = () => {
 
         {(isLoggedIn && advert.user_id === user.id) && (
             <div className="edit-delete-buttons">
-                <button className="editButton" onClick={() => navigate(`/editAdvert`)}>Edit</button>
+                <button className="editButton" onClick={() => handleEdit(advert)}>Edit</button>
                 <button className="editButton" onClick={() => handleDelete(advert.id)}>Delete</button>
             </div>
+        )}
+
+        {dialogOpen && selectedAdvert && (
+          <AdvertDialog
+            advert={selectedAdvert}
+            onClose={handleDialogClose}
+          />
         )}
     </div>
   );

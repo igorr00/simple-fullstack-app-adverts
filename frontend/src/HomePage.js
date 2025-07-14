@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
+import AdvertDialog from './AdvertDialog';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -15,6 +16,9 @@ const HomePage = () => {
   const [maxPrice, setMaxPrice] = useState('');
   const [category, setCategory] = useState('');
   const [showMineOnly, setShowMineOnly] = useState(false);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedAdvert, setSelectedAdvert] = useState(null);
 
   const categories = [
     "clothing",
@@ -62,6 +66,22 @@ const HomePage = () => {
     fetchAdverts();
   };
 
+  const handleEdit = (advert) => {
+    setSelectedAdvert(advert);
+    setDialogOpen(true);
+  };
+
+  const handleAdd = () => {
+    setSelectedAdvert(null);
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = (updated) => {
+    setDialogOpen(false);
+    setSelectedAdvert(null);
+    if (updated) fetchAdverts();
+  };
+
   const viewAdvert = async (id) => {
     localStorage.setItem('advertId', id);
     navigate('/viewAdvert');
@@ -75,7 +95,7 @@ const HomePage = () => {
             <>
               <p><b>{user.name} |</b></p>
               <button className="navbar-button" onClick={() => localStorage.removeItem('user') || navigate('/login')}><b>Sign Out</b></button>
-              <button className="navbar-button" onClick={() => navigate('/editAdvert')}><b>Add Advert</b></button>
+              <button className="navbar-button" onClick={() => handleAdd()}><b>Add Advert</b></button>
             </>
           ) : (
             <>
@@ -141,15 +161,15 @@ const HomePage = () => {
           </thead>
           <tbody>
             {adverts.map((advert) => (
-              <tr className='advert-row' key={advert.id} onClick={() => viewAdvert(advert.id)}>
-                <td><img src={advert.picture_url} alt={advert.name} className="advert-image" /></td>
-                <td>{advert.name}</td>
-                <td>{advert.price} €</td>
-                <td>{advert.city}</td>
-                <td>{advert.category}</td>
+              <tr className='advert-row' key={advert.id}>
+                <td onClick={() => viewAdvert(advert.id)}><img src={advert.picture_url} alt={advert.name} className="advert-image" /></td>
+                <td onClick={() => viewAdvert(advert.id)}>{advert.name}</td>
+                <td onClick={() => viewAdvert(advert.id)}>{advert.price} €</td>
+                <td onClick={() => viewAdvert(advert.id)}>{advert.city}</td>
+                <td onClick={() => viewAdvert(advert.id)}>{advert.category}</td>
                 {(isLoggedIn && advert.user_id === user.id) ? (
                   <td>
-                    <button className='editButton' onClick={() => navigate(`/editAdvert`)}>Edit</button>
+                    <button className='editButton' onClick={() => handleEdit(advert)}>Edit</button>
                     <button className='editButton' onClick={() => handleDelete(advert.id)}>Delete</button>
                   </td>
                 ) : (
@@ -165,6 +185,13 @@ const HomePage = () => {
           <span>Page {page}</span>
           <button onClick={() => setPage(p => p + 1)}>Next</button>
         </div>
+
+        {dialogOpen && selectedAdvert && (
+          <AdvertDialog
+            advert={selectedAdvert}
+            onClose={handleDialogClose}
+          />
+        )}
       </div>
     </div>
   );
